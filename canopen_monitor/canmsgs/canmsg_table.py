@@ -97,3 +97,13 @@ class CANMsgTable(Iterable):
         Iterator[CANMsg]: iterator for contained messages
         """
         return self.__message_table.__iter__()
+
+    def keys(self) -> typing.KeysView:
+        """
+        Get table keys
+
+        Returns
+        --------
+        KeysView: View of all keys in private message table object
+        """
+        return self.__message_table.keys()

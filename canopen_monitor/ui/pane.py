@@ -245,7 +245,22 @@ class CANMsgPane(Pane):
 
         self._pad.attroff(self._style)
 
-        for i, arb_id in enumerate(self.table):
+        # Don't Scroll down until after scrolling past last item
+        if self.scroll_position_y - (height - 4) > self.__top:
+            self.__top = self.scroll_position_y - (height - 4)
+        if self.scroll_position_y < self.__top:
+            self.__top = self.scroll_position_y
+
+        # Don't allow for for pad to be seen past v_width
+        if self.scroll_position_x + width > self.v_width:
+            self.scroll_position_x = self.v_width - width
+
+        scroll_offset_x = self.scroll_position_x
+
+        # draw visible data from table
+        keys = list(self.table.keys())
+        for i in range(self.__top, min(self.__top + height, len(self.table))):
+            arb_id = keys[i]
             msg = self.table[arb_id]
             attributes = dir(msg)
             line = ""
@@ -263,17 +278,7 @@ class CANMsgPane(Pane):
             is_selected = self.selected and self.scroll_position_y == i
             self.__add_line(i + 1, 1, line, selected=is_selected)
 
-        # Don't Scroll down until after scrolling past last item
-        if self.scroll_position_y - (height - 4) > self.__top:
-            self.__top = self.scroll_position_y - (height - 4)
-        if self.scroll_position_y < self.__top:
-            self.__top = self.scroll_position_y
-
-        # Don't allow for for pad to be seen past v_width
-        if self.scroll_position_x + width > self.v_width:
-            self.scroll_position_x = self.v_width - width
-
-        scroll_offset_x = self.scroll_position_x
+        # Draw header (Will overwrite top item
         self.__draw_header(self.__top, 1)
 
         self.parent.refresh()
