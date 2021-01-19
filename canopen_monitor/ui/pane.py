@@ -212,7 +212,7 @@ class CANMsgPane(Pane):
 
         self.v_height = len(self.table) + 50
         self.v_height = height if self.v_height < height else self.v_height
-        self.scroll_limit_y = len(self.table) - 1
+        self.scroll_limit_y = max(len(self.table) - 1, 0)
 
         self.v_width = width if self.v_width < width else self.v_width
         self.scroll_limit_x = self.v_width - 2
